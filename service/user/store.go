@@ -22,28 +22,21 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s *Store) GetUserByID(id int) (*types.User, error) {
-	return nil, nil
-}
-
-func (s *Store) CreateUser(user types.User) error {
-	return nil
-}
-
 /*
-GetUserByEmail retrieves a user from the database by their email.
+GetUserByID retrieves a user from the database by their unique ID.
 
-@param email - string: The email address to search for in the database.
+@param id - int: The unique ID of the user.
 
-@return *types.User: The user found by the email, or nil if not found.
+@return *types.User: A user object if found, otherwise nil.
 @return error: An error, if any occurs during the database query or data retrieval.
 */
-func (s *Store) GetUserByEmail(email string) (*types.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE email = ?", email)
+func (s *Store) GetUserByID(id int) (*types.User, error) {
+	rows, err := s.db.Query("SELECT * FROM users WHERE id = ?", id)
 
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close() // Ensure rows are closed after the function returns.
 
 	u := new(types.User)
 
@@ -63,7 +56,54 @@ func (s *Store) GetUserByEmail(email string) (*types.User, error) {
 }
 
 /*
-scanRowsIntoUser scans the rows from the database query result into a User object.
+CreateUser inserts a new user into the database.
+
+@param user - types.User: The user object containing first name, last name, email, and password.
+
+@return error: An error, if any occurs during the database insertion.
+*/
+func (s *Store) CreateUser(user types.User) error {
+	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)",
+		user.FirstName, user.LastName, user.Email, user.Password)
+
+	return err
+}
+
+/*
+GetUserByEmail retrieves a user from the database by their email.
+
+@param email - string: The email address to search for in the database.
+
+@return *types.User: The user found by the email, or nil if not found.
+@return error: An error, if any occurs during the database query or data retrieval.
+*/
+func (s *Store) GetUserByEmail(email string) (*types.User, error) {
+	rows, err := s.db.Query("SELECT * FROM users WHERE email = ?", email)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close() // Ensure rows are closed after the function returns.
+
+	u := new(types.User)
+
+	for rows.Next() {
+		u, err = scanRowsIntoUser(rows)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if u.ID == 0 {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return u, nil
+}
+
+/*
+scanRowsIntoUser scans a row from the database query result into a User object.
 
 @param rows - *sql.Rows: The result rows from the database query.
 
@@ -78,7 +118,6 @@ func scanRowsIntoUser(rows *sql.Rows) (*types.User, error) {
 		&user.FirstName,
 		&user.LastName,
 		&user.Email,
-		&user.Password,
 		&user.Password,
 		&user.CreatedAt,
 	)
