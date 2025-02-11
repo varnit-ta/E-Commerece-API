@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/go-sql-driver/mysql"
 	mysqlDriver "github.com/go-sql-driver/mysql"
 	mysqlMigrate "github.com/golang-migrate/migrate/v4/database/mysql"
 
