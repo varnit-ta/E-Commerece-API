@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/varnit-ta/Ecom-API/cmd/api"
-	"github.com/varnit-ta/Ecom-API/config"
+	"github.com/varnit-ta/Ecom-API/configs"
 	"github.com/varnit-ta/Ecom-API/db"
 )
 
@@ -15,10 +15,10 @@ Main Function
 */
 func main() {
 	db, err := db.NewMySQLStorage(mysql.Config{
-		User:                 config.Envs.DBUser,
-		Passwd:               config.Envs.DBPassword,
-		Addr:                 config.Envs.DBAddress,
-		DBName:               config.Envs.DBName,
+		User:                 configs.Envs.DBUser,
+		Passwd:               configs.Envs.DBPassword,
+		Addr:                 configs.Envs.DBAddress,
+		DBName:               configs.Envs.DBName,
 		Net:                  "tcp",
 		AllowNativePasswords: true,
 		ParseTime:            true,
