@@ -44,5 +44,8 @@ WriteError sends a JSON error response with a given HTTP status code.
 @param err - error: The error message to include in the response.
 */
 func WriteError(w http.ResponseWriter, status int, err error) {
+	if err == nil {
+		err = fmt.Errorf("unknown error")
+	}
 	WriteJSON(w, status, map[string]string{"error": err.Error()})
 }
