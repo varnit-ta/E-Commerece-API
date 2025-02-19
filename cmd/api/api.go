@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/varnit-ta/Ecom-API/service/products"
 	"github.com/varnit-ta/Ecom-API/service/user"
 )
 
@@ -46,9 +47,12 @@ func (s *APIServer) Run() error {
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 
 	userStore := user.NewStore(s.db)
-
 	userHandler := user.NewHandler(userStore)
 	userHandler.RegisterRoutes(subrouter)
+
+	productStore := products.NewStore(s.db)
+	productHandler := products.NewHandler(productStore, userStore)
+	productHandler.RegisterRoutes(subrouter)
 
 	log.Println("Listening on ", s.addr)
 
