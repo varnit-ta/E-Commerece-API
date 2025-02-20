@@ -7,7 +7,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"github.com/varnit-ta/Ecom-API/configs"
-	"github.com/varnit-ta/Ecom-API/service/auth"
+	"github.com/varnit-ta/Ecom-API/services/auth"
 	"github.com/varnit-ta/Ecom-API/types"
 	"github.com/varnit-ta/Ecom-API/utils"
 )
