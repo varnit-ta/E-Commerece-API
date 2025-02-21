@@ -31,4 +31,3 @@ test:
 
 run: build
 	@./bin/Ecom-API
-
